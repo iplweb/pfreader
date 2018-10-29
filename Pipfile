@@ -10,6 +10,7 @@ openpyxl = "==2.4.9"
 [dev-packages]
 pytest = "*"
 pytest-pythonpath = "*"
+bumpversion = "*"
 
 [requires]
 python_version = "3.7"
