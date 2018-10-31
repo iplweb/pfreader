@@ -6,3 +6,9 @@ class LineNotFoundException(Exception):
 
 class EmptyLineNotFound(Exception):
     pass
+
+class DataNotFound(Exception):
+    pass
+
+class HeaderNotFound(Exception):
+    pass

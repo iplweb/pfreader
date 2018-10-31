@@ -27,6 +27,8 @@ class Base:
     cleanly...
     """
 
+    required = True
+
     def __init__(self, data):
         self.data = data
 
@@ -114,12 +116,15 @@ class RepositioningData(IndexBase):
     data_label = "User events"
     label = "Repositioning data"
 
+    required = False # Older software won't dump this data
+
     def get_header(self):
-        rd = self.get_line_starting_with_no("Repositioning data:")
-        return self.data[rd]
+        rd = self.get_line_starting_with_no("Repositioning data:", exception=False)
+        if rd:
+            return self.data[rd]
 
     def get_data(self):
-        rd = self.get_line_starting_with_no("Repositioning data:") + 1
+        rd = self.get_line_starting_with_no("Repositioning data:", exception=False) + 1
         return [x for x in self.data[rd:self.get_empty_row_no(rd)]]
 
 
@@ -159,6 +164,7 @@ class PLI(IndexBase):
 
 class PLL(IndexBase):
     label = "PLL"
+    required = False
     pass
 
 
