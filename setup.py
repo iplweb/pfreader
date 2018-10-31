@@ -39,7 +39,6 @@ setup(
     keywords='PrismaFlex Baxter Prisma Flex Gambro LOX files CRRT CVVHDF TPE',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
-        'Intended Audience :: Intensive care specialists',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
