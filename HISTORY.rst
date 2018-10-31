@@ -1,5 +1,10 @@
-0.0.2-dev
----------
+dev
+---
+
+*
+
+0.0.2
+-------------------
 
 * make elements optional (support version 7 of software)
 
