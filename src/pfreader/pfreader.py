@@ -243,7 +243,10 @@ class Summary(UserEvents):
                 pass
 
         elif tt == "TPE":
-            yield ("Plasma exchange planned", first(find_events(const.EVENT_PLASMA_VOLUME_SET))[const.SAMPLE_COD + 1])
+            try:
+                yield ("Plasma exchange planned", first(find_events(const.EVENT_PLASMA_VOLUME_SET))[const.SAMPLE_COD + 1])
+            except TypeError:
+                pass
             yield ("PBP bag volume", first(find_events(const.EVENT_SUBSTITUTE_VOLUME_SET))[const.SAMPLE_COD + 1])
 
         try:
