@@ -8,7 +8,6 @@ dev
 
 * openpyxl support for faster XLSX creation
 
-
 0.0.5
 -----
 
