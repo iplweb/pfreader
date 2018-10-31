@@ -10,11 +10,8 @@ from pfreader.pfreader import data_classess
 from . import exceptions
 
 
-def get_databook(lox_data):
-    db = tablib.Databook()
+def get_output(lox_data):
     for elem in data_classess:
-        ds = tablib.Dataset(title=elem.label)
-
         try:
             if hasattr(elem, "data_label"):
                 data = lox_data[elem.data_label]
@@ -28,21 +25,30 @@ def get_databook(lox_data):
         d = elem(data)
 
         if hasattr(d, "get_header"):
-            ds.headers = d.get_header()
+            headers = d.get_header()
 
-        if ds.headers is None:
+        if headers is None:
             if not elem.required:
                 continue
             raise exceptions.HeaderNotFound(elem.label)
 
-        rowlen = len(ds.headers)
+        rowlen = len(headers)
 
+        data = []
         if hasattr(d, "get_data"):
-            for elem in d.get_data():
-                while len(elem) < rowlen:
-                    elem += [""]
+            for row in d.get_data():
+                while len(row) < rowlen:
+                    row += [""]
+                data.append(row[:rowlen])
+        yield (elem.label, headers, data)
 
-                ds.append(elem[:rowlen])
-            # map(ds.append, d.get_data())
+
+def get_databook(lox_data):
+    db = tablib.Databook()
+    for label, headers, data in get_output(lox_data):
+        ds = tablib.Dataset(title=label)
+        ds.headers = headers
+        for elem in data:
+            ds.append(elem)
         db.add_sheet(ds)
     return db

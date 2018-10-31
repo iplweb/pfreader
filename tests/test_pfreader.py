@@ -2,7 +2,7 @@ import os
 
 from pfreader.core import dir_contains_pflex_data, get_machines, get_loxfiles, get_year_dirs, get_loxfile_data
 from pfreader.pfreader import UserEvents, SystemEvents, PLC, Tare, PLI, PLL, RepositioningData, CalibrationScaleData, \
-    CalibrationPressureData
+    CalibrationPressureData, Summary
 from .conftest import TEST_MACHINE, TEST_YEAR, TEST_LOXFILE
 
 
@@ -91,6 +91,11 @@ def test_PLI(loxdata):
     assert pli.get_header()[0] == "Index"
     assert len(pli.get_data()) == 47
 
+def test_Summary(loxdata):
+    s = Summary(loxdata["User events"])
+    r = list(s.get_data())
+    assert r[2][1] == "as planned"
+    assert r[5][1] == "TPE"
 
 def test_PLL(loxdata):
     pll = PLL(loxdata["PLL"])
