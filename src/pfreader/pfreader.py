@@ -116,7 +116,7 @@ class RepositioningData(IndexBase):
     data_label = "User events"
     label = "Repositioning data"
 
-    required = False # Older software won't dump this data
+    required = False  # Older software won't dump this data
 
     def get_header(self):
         rd = self.get_line_starting_with_no("Repositioning data:", exception=False)
@@ -162,6 +162,18 @@ class PLI(IndexBase):
     pass
 
 
+class Pressure(IndexBase):
+    label = "PLP"
+    required = False
+    pass
+
+
+class Syringe(IndexBase):
+    label = "PLY"
+    required = False
+    pass
+
+
 class PLL(IndexBase):
     label = "PLL"
     required = False
@@ -180,10 +192,13 @@ class Fluids(IndexBase):
 
 data_classess = [
     UserEvents,
+    Pressure,
+    Syringe,
+    Fluids,
+    Tare,
+    PLC, PLI, PLL,
     CalibrationPressureData,
     CalibrationScaleData,
     RepositioningData,
     SystemEvents,
-    PLC, PLI, PLL, Tare,
-    Fluids,
 ]
