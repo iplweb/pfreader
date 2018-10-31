@@ -22,7 +22,7 @@ test_requirements = reqs("requirements_dev.txt")
 
 setup(
     name='pfreader',
-    version='0.0.3',
+    version='0.0.4-dev',
     description="Reader for Baxter® PrismaFlex® LOX files",
     long_description=readme + '\n\n' + history,
     author="IPLWeb",
