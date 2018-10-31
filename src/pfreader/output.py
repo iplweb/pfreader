@@ -4,8 +4,6 @@ PFReader output module
 Uses tablib
 """
 
-import tablib
-
 from pfreader.pfreader import data_classess
 from . import exceptions
 
@@ -43,7 +41,29 @@ def get_output(lox_data):
         yield (elem.label, headers, data)
 
 
+def get_openpyxl(lox_data):
+    import openpyxl
+
+    wb_out = openpyxl.Workbook()
+    idx = 0
+    for elem, header, data in lox_data:
+        ws_out = wb_out.create_sheet(elem, idx)
+        idx += 1
+        ws_out.append(header)
+        ws_out.freeze_panes = 'A2'
+        for row in data:
+            ws_out.append(row)
+
+        for column_cells in ws_out.columns:
+            length = max(len(str(cell.value)) for cell in column_cells)
+            ws_out.column_dimensions[column_cells[0].column].width = length
+
+    return wb_out
+
+
 def get_databook(lox_data):
+    import tablib
+
     db = tablib.Databook()
     for label, headers, data in get_output(lox_data):
         ds = tablib.Dataset(title=label)
