@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 tablib = "*"
 openpyxl = "==2.4.9"
+dateutils = "*"
 
 [dev-packages]
 pytest = "*"
