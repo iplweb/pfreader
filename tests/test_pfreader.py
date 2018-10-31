@@ -94,10 +94,8 @@ def test_PLI(loxdata):
 def test_Summary(loxdata):
     s = Summary(loxdata["User events"])
     r = list(s.get_data())
-    assert r[2][1] == 0
-    assert r[3][1] == "TPE"
-    import pprint
-    pprint.pprint(r)
+    assert r[2][1] == "as planned"
+    assert r[5][1] == "TPE"
 
 def test_PLL(loxdata):
     pll = PLL(loxdata["PLL"])
