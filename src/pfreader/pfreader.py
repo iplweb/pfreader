@@ -163,7 +163,6 @@ class PLI(IndexBase):
 
 
 class Pressure(IndexBase):
-    data_label = "PLP"
     label = "Pressure"
     required = False
     pass
@@ -171,7 +170,6 @@ class Pressure(IndexBase):
 
 class Syringe(IndexBase):
     label = "Syringe"
-    data_label = "PLY"
     required = False
     pass
 

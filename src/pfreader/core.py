@@ -83,7 +83,7 @@ extmap = {
     "ple": ("User events", ["utf-16", "split", "strip", "csv"]),
     "plp": ("Pressure", ["utf-8", "split", "strip", "csv"]),
     "pls": ("Fluids", ["ascii", "split", "strip", "csv", ]),
-    "ply": ("Unknown #1 (PLY)", ["ascii", "split", "strip", "csv", ]),
+    "ply": ("Syringe", ["ascii", "split", "strip", "csv", ]),
     "plc": ("PLC", ["ascii", "split", "strip", "csv", ]),
     "plt": ("Tare", ["ascii", "split", "strip", "csv", ]),
     "pli": ("PLI", ["ascii", "split", "strip", "csv", ]),

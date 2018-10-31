@@ -15,15 +15,15 @@ def get_databook(lox_data):
     for elem in data_classess:
         ds = tablib.Dataset(title=elem.label)
 
-        if hasattr(elem, "data_label"):
-            data = lox_data[elem.data_label]
-        else:
-            try:
+        try:
+            if hasattr(elem, "data_label"):
+                data = lox_data[elem.data_label]
+            else:
                 data = lox_data[elem.label]
-            except KeyError:
-                if not elem.required:
-                    continue
-                raise exceptions.DataNotFound(elem.label)
+        except KeyError:
+            if not elem.required:
+                continue
+            raise exceptions.DataNotFound(elem.label)
 
         d = elem(data)
 
