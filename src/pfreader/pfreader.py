@@ -1,5 +1,8 @@
 import os
 
+from dateutil import parser
+
+from . import const
 from .core import get_year_dirs, get_loxfile_data, get_loxfiles
 from .exceptions import LineNotFoundException, EmptyLineNotFound
 
@@ -139,6 +142,90 @@ class UserEvents(IndexBase):
         return super(UserEvents, self).get_header() + ["Extra #1"]
 
 
+class Summary(UserEvents):
+    label = "Summary"
+
+    def get_header(self):
+        return ["Description", "Value"]
+
+    def get_data(self):
+        # Index, Time, Class(cod), Class, Type(cod), Type, Sample(cod), Sample, ...
+
+        data = super(Summary, self).get_data()
+        for elem in data:
+            elem[2] = int(elem[2])
+            elem[4] = int(elem[4])
+            elem[6] = int(elem[6])
+
+        def find_events(event, sample_cod=None):
+            for elem in data:
+                if elem[2] == event[0] and elem[4] in event[1]:
+                    if sample_cod is not None:
+                        if elem[const.SAMPLE_COD] != sample_cod:
+                            continue
+                    yield elem
+
+        def count(events):
+            if events is None:
+                return 0
+            return len(list(events))
+
+        def first(events):
+            for elem in events:
+                return elem
+
+        def last(events):
+            elem = None
+            for elem in events:
+                pass
+            return elem
+
+        try:
+            ts = first(find_events(const.EVENT_THERAPY_START))[1]
+        except TypeError:
+            ts = None
+        try:
+            te = last(find_events(const.EVENT_THERAPY_END))[1]
+        except TypeError:
+            te = None
+
+        yield ("Therapy start", ts or "unknown")
+        yield ("Therapy end", te or "unknown")
+        if te is not None and ts is not None:
+            delta = parser.parse(te) - parser.parse(ts)
+            yield ("Therapy duration (days)", delta.days)
+
+        if count(first(find_events(const.EVENT_CVVHDF_CHOSEN))):
+            tt = "CVVHDF"
+        elif count(first(find_events(const.EVENT_TPE_CHOSEN))):
+            tt = "TPE"
+        else:
+            tt = "Unknown (please send LOX file to package author)"
+        yield ("Therapy type", tt)
+
+        if tt == "CVVHDF":
+            if count(find_events(const.EVENT_CITRATE_CHOSEN)):
+                yield ("Anticoagulation", "citrate")
+                yield ("Calcium concentration (syringe)",
+                       first(find_events(const.EVENT_CALCIUM_CONCENTRATION_SYRINGE))[const.SAMPLE_COD + 1])
+                yield ("Calcium concentration (substitute)",
+                       first(find_events(const.EVENT_CALCIUM_CONCENTRATION_SUBSTITUTE))[const.SAMPLE_COD + 1])
+
+        elif tt == "TPE":
+            yield ("Plasma exchange planned", first(find_events(const.EVENT_PLASMA_VOLUME_SET))[const.SAMPLE_COD + 1])
+            yield ("PBP bag volume", first(find_events(const.EVENT_SUBSTITUTE_VOLUME_SET))[const.SAMPLE_COD + 1])
+
+        try:
+            yield ("Syringe volume", first(find_events(const.EVENT_SYRINGE_SIZE_SET))[const.SAMPLE_COD + 1])
+        except TypeError:
+            pass
+
+        yield ("Syringe changes", count(find_events(const.EVENT_SYRINGE_CHANGED, sample_cod=0)))
+        yield ("PBP bag changes", count(find_events(const.EVENT_CHANGE_PBP, sample_cod=0)))
+        yield ("Dialysate bag changes", count(find_events(const.EVENT_CHANGE_DIALYSATE, sample_cod=0)))
+        yield ("Substitute bag changes", count(find_events(const.EVENT_CHANGE_SUBSTITUTE, sample_cod=0)))
+
+
 class SystemEvents(Base):
     label = "System events"
 
@@ -191,6 +278,7 @@ class Fluids(IndexBase):
 
 
 data_classess = [
+    Summary,
     UserEvents,
     Pressure,
     Syringe,
